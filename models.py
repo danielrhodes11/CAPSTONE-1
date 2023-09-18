@@ -63,6 +63,11 @@ class User(db.Model):
             "profile_image": self.profile_image
         }
 
+    def __repr__(self):
+        """show info about user"""
+
+        return f"<User {self.username} {self.email}>"
+
 
 class Playlists(db.Model):
     """playlists table"""
@@ -76,8 +81,8 @@ class Playlists(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(
         "users.id", ondelete="cascade"), nullable=False)
 
-    songs = db.relationship(
-        "Song", secondary="playlist_songs", backref="playlists")
+    tracks = db.relationship(
+        "Track", secondary="playlist_trackss", backref="playlists")
 
     def serialize(self):
         """serialize playlist data"""
@@ -91,31 +96,31 @@ class Playlists(db.Model):
         }
 
 
-class PlaylistSongs(db.Model):
-    """playlist songs table"""
+class PlaylistTracks(db.Model):
+    """playlist tracks table"""
 
-    __tablename__ = "playlist_songs"
+    __tablename__ = "playlist_tracks"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     playlist_id = db.Column(db.Integer, db.ForeignKey(
         "playlists.id", ondelete="cascade"), nullable=False)
-    song_id = db.Column(db.Integer, db.ForeignKey(
-        "songs.id", ondelete="cascade"), nullable=False)
+    track_id = db.Column(db.Integer, db.ForeignKey(
+        "tracks.id", ondelete="cascade"), nullable=False)
 
     def serialize(self):
-        """serialize playlist songs data"""
+        """serialize playlist tracks data"""
 
         return {
             "id": self.id,
             "playlist_id": self.playlist_id,
-            "song_id": self.song_id
+            "track_id": self.track_id
         }
 
 
-class Song(db.Model):
-    """songs table"""
+class Track(db.Model):
+    """tracks table"""
 
-    __tablename__ = "songs"
+    __tablename__ = "tracks"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.Text, nullable=False)
@@ -128,7 +133,7 @@ class Song(db.Model):
     spotify_id = db.Column(db.Text, nullable=False)
 
     def serialize(self):
-        """serialize song data"""
+        """serialize track data"""
 
         return {
             "id": self.id,
