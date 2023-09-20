@@ -2,6 +2,8 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from sqlalchemy.orm import relationship
+
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -44,7 +46,7 @@ class User(db.Model):
     def authenticate(cls, username, password):
         """validate that user exists and password is correct"""
 
-        user = User.query.filter_by(username=username).first()
+        user = User.session.query.filter_by(username=username).first()
 
         if user and bcrypt.check_password_hash(user.password, password):
             return user
@@ -82,7 +84,7 @@ class Playlists(db.Model):
         "users.id", ondelete="cascade"), nullable=False)
 
     tracks = db.relationship(
-        "Track", secondary="playlist_trackss", backref="playlists")
+        "Track", secondary="playlist_tracks", backref="playlists")
 
     def serialize(self):
         """serialize playlist data"""
@@ -106,6 +108,7 @@ class PlaylistTracks(db.Model):
         "playlists.id", ondelete="cascade"), nullable=False)
     track_id = db.Column(db.Integer, db.ForeignKey(
         "tracks.id", ondelete="cascade"), nullable=False)
+    ordinal = db.Column(db.Integer, nullable=False)
 
     def serialize(self):
         """serialize playlist tracks data"""
@@ -113,7 +116,8 @@ class PlaylistTracks(db.Model):
         return {
             "id": self.id,
             "playlist_id": self.playlist_id,
-            "track_id": self.track_id
+            "track_id": self.track_id,
+            "ordinal": self.order
         }
 
 
@@ -128,7 +132,7 @@ class Track(db.Model):
     album = db.Column(db.Text, nullable=False)
     image = db.Column(db.Text, nullable=False)
     genre = db.Column(db.Text, nullable=False)
-    release_date = db.Column(db.Text, nullable=False)
+    release_date = db.Column(db.Integer, nullable=False)
     preview = db.Column(db.Text, nullable=False)
     spotify_id = db.Column(db.Text, nullable=False)
 
@@ -146,3 +150,11 @@ class Track(db.Model):
             "preview": self.preview,
             "spotify_id": self.spotify_id
         }
+
+
+# learn about ordinality     https://stackoverflow.com/questions/5033547/sqlalchemy-order-by-descending
+
+# collection class for playlist tracks
+
+
+# create a class that handles request calls to spotify api in a seperate file
