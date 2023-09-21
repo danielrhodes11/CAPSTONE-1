@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="display-4">Sign Up</h2>
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            {{ form.username(class="form-control rounded-pill") }}
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            {{ form.password(class="form-control rounded-pill") }}
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            {{ form.email(class="form-control rounded-pill") }}
+                        </div>
+                        <div class="form-group">
+                            <label for="first_name">First Name</label>
+                            {{ form.first_name(class="form-control rounded-pill") }}
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Last Name</label>
+                            {{ form.last_name(class="form-control rounded-pill") }}
+                        </div>
+                        <div class="form-group">
+                            <label for="profile_image">Profile Image URL</label>
+                            {{ form.profile_image(class="form-control rounded-pill") }}
+                        </div>
+                        <button type="submit" class="btn btn-success btn-block rounded-pill">Sign Up</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

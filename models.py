@@ -28,10 +28,10 @@ class User(db.Model):
     first_name = db.Column(db.Text, nullable=False)
     last_name = db.Column(db.Text, nullable=False)
     profile_image = db.Column(
-        db.Text, nullable=False, default="https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png")
+        db.Text, nullable=False, default="/static/user.png")
 
     playlists = db.relationship(
-        "Playlist", backref="user", cascade="all, delete-orphan")
+        "Playlists", backref="user", cascade="all, delete-orphan")
 
     @classmethod
     def register(cls, username, password, email, first_name, last_name, profile_image):
@@ -46,7 +46,8 @@ class User(db.Model):
     def authenticate(cls, username, password):
         """validate that user exists and password is correct"""
 
-        user = User.session.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).first()
+        # if warning add session
 
         if user and bcrypt.check_password_hash(user.password, password):
             return user
@@ -84,7 +85,7 @@ class Playlists(db.Model):
         "users.id", ondelete="cascade"), nullable=False)
 
     tracks = db.relationship(
-        "Track", secondary="playlist_tracks", backref="playlists")
+        "Tracks", secondary="playlist_tracks", backref="playlists")
 
     def serialize(self):
         """serialize playlist data"""
@@ -121,7 +122,7 @@ class PlaylistTracks(db.Model):
         }
 
 
-class Track(db.Model):
+class Tracks(db.Model):
     """tracks table"""
 
     __tablename__ = "tracks"

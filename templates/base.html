@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Playlistify</title>
+
+    <!-- Include Bootstrap CSS via CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Include Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <!-- Your custom stylesheets -->
+    <link rel="stylesheet" href="/static/style.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/static/vinylb&w.png">
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">
+            <i class="fab fa-spotify"></i>
+            <span>Playlistify</span>
+        </a>
+    
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                {% if not g.user %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/signup">Sign up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Log in</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/{{ g.user.id }}">
+                        <img src="{{ g.user.image_url }}" alt="{{ g.user.username }}" class="user-profile-image">
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Log out</a>
+                </li>
+                {% endif %}
+    
+                {% if g.user %}
+                <li class="nav-item">
+                    <form class="form-inline my-2 my-lg-0" action="/users">
+                        <input name="q" class="form-control" placeholder="Search Playlistify" id="search">
+                        <button class="btn btn-outline-light" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Container for content -->
+    <div class="container mt-5">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Include Bootstrap JS (jQuery and Popper.js are required) via CDN -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Your custom JavaScript -->
+    <script src="/static/app.js"></script>
+</body>
+
+</html>

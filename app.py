@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, redirect, flash, session, request, jsonify, g
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Playlist, Song, PlaylistSong
+from models import db, connect_db, User, Playlists, Tracks, PlaylistTracks
 from forms import RegisterForm, LoginForm, PlaylistForm, SongForm
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import Unauthorized
@@ -55,6 +55,13 @@ def do_logout():
 
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
+
+
+@app.route("/")
+def homepage():
+    """Show homepage"""
+
+    return render_template("home.html")
 
 
 @app.route("/signup", methods=["GET", "POST"])
