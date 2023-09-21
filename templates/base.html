@@ -44,7 +44,7 @@
                 {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="/users/{{ g.user.id }}">
-                        <img src="{{ g.user.image_url }}" alt="{{ g.user.username }}" class="user-profile-image">
+                        <img src="{{ g.user.profile_image }}" alt="{{ g.user.username }}" class="user-profile-image">
                     </a>
                 </li>
                 <li class="nav-item">
@@ -66,8 +66,18 @@
         </div>
     </nav>
 
-    <!-- Container for content -->
+    
     <div class="container mt-5">
+        <!-- flash messages -->
+        <div class="container mt-5">
+            <!-- Flash messages section -->
+            <div class="container">
+                {% for category, message in get_flashed_messages(with_categories=True) %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+                <div id="alert-container"></div>
+              </div>
+              
         {% block content %}
         {% endblock %}
     </div>
