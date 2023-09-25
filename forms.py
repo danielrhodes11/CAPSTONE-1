@@ -15,6 +15,7 @@ class RegisterForm(FlaskForm):
                              InputRequired(), Length(max=30)])
     last_name = StringField("Last Name", validators=[
                             InputRequired(), Length(max=30)])
+    bio = TextAreaField("Bio", validators=[Optional()])
     profile_image = StringField(
         "Profile Image", validators=[Optional(), URL()])
 
@@ -26,6 +27,19 @@ class LoginForm(FlaskForm):
                            InputRequired(), Length(max=20)])
     password = PasswordField("Password", validators=[
                              InputRequired(), Length(min=6, max=55)])
+
+
+class EditUserForm(FlaskForm):
+    """form for editing a user's profile"""
+
+    email = StringField("Email", validators=[InputRequired(), Email()])
+    first_name = StringField("First Name", validators=[
+                             InputRequired(), Length(max=30)])
+    last_name = StringField("Last Name", validators=[
+                            InputRequired(), Length(max=30)])
+    bio = TextAreaField("Bio", validators=[Optional()])
+    profile_image = StringField(
+        "Profile Image", validators=[Optional(), URL()])
 
 
 class PlaylistForm(FlaskForm):

@@ -27,20 +27,21 @@ class User(db.Model):
     email = db.Column(db.Text, nullable=False, unique=True)
     first_name = db.Column(db.Text, nullable=False)
     last_name = db.Column(db.Text, nullable=False)
+    bio = db.Column(db.Text, nullable=True)
     profile_image = db.Column(
-        db.Text, nullable=False, default="/static/user.png")
+        db.Text, nullable=False, default="static/default-img.png")
 
     playlists = db.relationship(
         "Playlists", backref="user", cascade="all, delete-orphan")
 
     @classmethod
-    def register(cls, username, password, email, first_name, last_name, profile_image):
+    def register(cls, username, password, email, first_name, last_name, profile_image, bio):
         """register user w/hashed password & return user"""
 
         hashed = bcrypt.generate_password_hash(password)
         hashed_utf8 = hashed.decode("utf8")
 
-        return cls(username=username, password=hashed_utf8, email=email, first_name=first_name, last_name=last_name, profile_image=profile_image)
+        return cls(username=username, password=hashed_utf8, email=email, first_name=first_name, last_name=last_name, profile_image=profile_image, bio=bio)
 
     @classmethod
     def authenticate(cls, username, password):

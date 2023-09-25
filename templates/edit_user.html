@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Edit Your Profile</h2>
+    <hr>
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+
+        <!-- Email -->
+        <div class="form-group">
+            <label for="email">Email</label>
+            {{ form.email(class="form-control", placeholder="Your email address") }}
+        </div>
+
+        <!-- First Name -->
+        <div class="form-group">
+            <label for="first_name">First Name</label>
+            {{ form.first_name(class="form-control", placeholder="Your first name") }}
+        </div>
+
+        <!-- Last Name -->
+        <div class="form-group">
+            <label for="last_name">Last Name</label>
+            {{ form.last_name(class="form-control", placeholder="Your last name") }}
+        </div>
+
+        <!-- Bio -->
+        <div class="form-group">
+            <label for="bio">Bio</label>
+            {{ form.bio(class="form-control", placeholder="A short bio about yourself") }}
+        </div>
+
+        <!-- Profile Image -->
+        <div class="form-group">
+            <label for="profile_image">Profile Image</label>
+            {{ form.profile_image(class="form-control-file") }}
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+
+        <!-- delete user button -->
+        <a href="{{ url_for('delete_user', user_id=g.user.id) }}" class="btn btn-danger">Delete Account</a>
+    </form>
+</div>
+{% endblock %}
+
