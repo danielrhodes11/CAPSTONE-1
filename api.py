@@ -1,80 +1,77 @@
-import requests
-from flask import session
+from dotenv import load_dotenv
+import os
+import base64
+from requests import get, post
+import json
+
+load_dotenv()
 
 
-# curl -X POST "https://accounts.spotify.com/api/token" \
-#      -H "Content-Type: application/x-www-form-urlencoded" \
-#      -d "grant_type=client_credentials&client_id=3b6c1dbfd64b4469a6a851f900ed8ede&client_secret=b0f17c9b67034b3bb49acb049068a04b"
+client_id = os.getenv("CLIENT_ID")
+client_secret = os.getenv("CLIENT_SECRET")
 
-# {"access_token":"BQCTm_ORYBshGLgEArx6-6Cnx_ww1uzb_wJYPD-nLGRe6cc2hPazSbfPaG3XeCuTpt6L_ZY3NzUUri5PTvTdZF7W1g3MgErywfqtBFwvNtDqZQhTMTg","token_type":"Bearer","expires_in":3600}
 
-def get_user_access_token():
-    """Fetch the user's access token from the session or another source."""
-    access_token = session.get(
-        "BQCTm_ORYBshGLgEArx6-6Cnx_ww1uzb_wJYPD-nLGRe6cc2hPazSbfPaG3XeCuTpt6L_ZY3NzUUri5PTvTdZF7W1g3MgErywfqtBFwvNtDqZQhTMTg")
+def get_token():
+    auth_string = client_id + ":" + client_secret
+    auth_bytes = auth_string.encode("utf-8")
+    auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")
+
+    url = "https://accounts.spotify.com/api/token"
+    headers = {
+        "Authorization": "Basic " + auth_base64,
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    data = {"grant_type": "client_credentials"}
+
+    response = post(url, headers=headers, data=data)
+    json_response = json.loads(response.content)
+    access_token = json_response["access_token"]
+
     return access_token
 
 
-def get_available_genres(access_token):
-    """Fetch available genres using the Spotify API."""
-    headers = {"Authorization": f"Bearer {access_token}"}
-    response = requests.get(
-        "https://api.spotify.com/v1/recommendations/available-genre-seeds", headers=headers)
+def get_auth_header(token):
+    return {"Authorization": "Bearer " + token}
 
-    if response.status_code == 200:
-        data = response.json()
-        return data.get("genres", [])
+
+def search_for_artist(token, artist):
+    base_url = "https://api.spotify.com/v1/search"
+    headers = get_auth_header(token)
+
+    query = f"?q={artist}&type=artist&limit=1"
+
+    query_url = base_url + query
+    response = get(query_url, headers=headers)
+    json_response = json.loads(response.content)["artists"]["items"]
+    if len(json_response) == 0:
+        print("No artist found")
+        return None
+
     else:
-        return []
+        return json_response[0]
 
 
-def get_top_artists(access_token, time_range='medium_term', limit=10):
-    """Fetch the user's top artists using the Spotify API."""
+def get_songs_by_artist(token, artist_id):
+    base_url = "https://api.spotify.com/v1/artists/"
+    headers = get_auth_header(token)
 
-    # Define the endpoint URL
-    url = 'https://api.spotify.com/v1/top/artists'
+    query = f"{artist_id}/top-tracks?market=US"
 
-    # Define the headers with the access token
-    headers = {
-        'Authorization': f'Bearer {access_token}'
-    }
+    query_url = base_url + query
+    response = get(query_url, headers=headers)
+    json_response = json.loads(response.content)["tracks"]
 
-    # Define the query parameters
-    params = {
-        'time_range': time_range,
-        'limit': limit
-    }
-
-    # Make the API request to get top artists
-    response = requests.get(url, headers=headers, params=params)
-
-    if response.status_code == 200:
-        data = response.json()
-        artists = data['items']
-    else:
-        artists = []
-
-    return artists
+    return json_response
 
 
-def get_top_tracks(access_token):
-    """fetch top tracks from spotify api"""
-    endpoint = "https://api.spotify.com/v1/top-tracks"
+token = get_token()
+response = search_for_artist(token, "The Beatles")
+artist_id = response["id"]
 
-    headers = {
-        "Authorization": f"Bearer {access_token}"
-    }
+print(response["name"])
 
-    params = {
-        "limit": 10
-    }
+tracks = get_songs_by_artist(token, artist_id)
 
-    response = requests.get(endpoint, headers=headers, params=params)
-
-    if response.status_code == 200:
-        data = response.json()
-        tracks = data["items"]
-    else:
-        tracks = []
-
-    return tracks
+for track in tracks:
+    print(track["name"])

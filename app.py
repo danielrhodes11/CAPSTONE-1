@@ -8,6 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import Unauthorized
 from config.dev_config import DevConfig
 from config.test_config import TestConfig
+from api import get_token, get_auth_header
 
 CURR_USER_KEY = "curr_user"
 
@@ -281,3 +282,6 @@ def delete_playlist(playlist_id):
 
     flash("Playlist deleted!", "success")
     return redirect(f"/users/{g.user.id}")
+
+
+# SONG ROUTES
