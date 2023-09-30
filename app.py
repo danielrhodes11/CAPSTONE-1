@@ -74,6 +74,9 @@ def signup():
     If there already is a user with that username: flash message
     and re-present form.
     """
+    if g.user:
+        flash("You are already logged in.", "danger")
+        return redirect("/")
 
     form = RegisterForm()
 
@@ -200,6 +203,7 @@ def delete_user(user_id):
 ###################################
 #  PLAYLIST ROUTES
 ###################################
+
 
 @app.route("/users/<int:user_id>/playlists/new", methods=["GET", "POST"])
 def create_playlist(user_id):
@@ -404,6 +408,11 @@ def show_song_details(spotify_id):
     song_info = get_song_info(token, spotify_id)
 
     return render_template("song_details.html", song_info=song_info)
+
+
+######################
+# GLOBAL SEARCH ROUTES
+######################
 
 
 ######## things to potentially add##########

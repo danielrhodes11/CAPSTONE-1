@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
       <div class="col-md-6 offset-md-3">
-        <form method="GET" action="/playlists/{{ playlist.id }}/search/results" class="mt-4">
+        <form method="GET" action="{{ url_for('show_search_results', playlist_id=playlist.id)}}" class="mt-4">
           <div class="input-group">
             <input type="text" class="form-control" id="song_name" name="song_name" placeholder="Search for songs...">
             <div class="input-group-append">
