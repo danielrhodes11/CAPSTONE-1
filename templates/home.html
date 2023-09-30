@@ -3,13 +3,40 @@
 {% block content %}
 <div class="container mt-5">
     <div class="row">
-        <div class="col-md-6 offset-md-3 text-center">
-            <h1>Welcome to Playlistify</h1>
-            <p class="lead">Discover and enjoy your favorite music.</p>
-            <p>Create and organize playlists.</p>
-            <p>Search for songs and artists.</p>
-            <p>Listen to music anywhere, anytime.</p>
-            <a href="/signup" class="btn btn-success btn-lg mt-3">Get Started</a>
+        <!-- Search for Songs -->
+        <div class="col-md-4">
+            <a href="/search" class="card-link">
+                <div class="card hover-card mb-3">
+                    <div class="card-body-home">
+                        <h5 class="card-title">Search for Songs</h5>
+                        <p class="card-text">Find your favorite songs and artists quickly and easily.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Explore Genres -->
+        <div class="col-md-4">
+            <a href="/genres" class="card-link">
+                <div class="card hover-card mb-3">
+                    <div class="card-body-home">
+                        <h5 class="card-title">Explore Genres</h5>
+                        <p class="card-text">Discover new music genres and explore something new.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Create Playlist -->
+        <div class="col-md-4">
+            <a href="{{ url_for('create_playlist', user_id=g.user.id) }}" class="card-link">
+                <div class="card hover-card mb-3">
+                    <div class="card-body-home">
+                        <h5 class="card-title">Create Playlist</h5>
+                        <p class="card-text">Build your custom playlist with your favorite songs.</p>
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
 </div>

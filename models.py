@@ -114,7 +114,7 @@ class PlaylistTracks(db.Model):
     album = db.Column(db.Text, nullable=False)
     image = db.Column(db.Text, nullable=False)
     release_date = db.Column(db.Text, nullable=False)
-    preview = db.Column(db.Text, nullable=False)
+    preview = db.Column(db.Text, nullable=True)
     spotify_id = db.Column(db.Text, nullable=False)
 
     playlist_id = db.Column(db.Integer, db.ForeignKey(

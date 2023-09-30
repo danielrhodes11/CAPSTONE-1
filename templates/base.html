@@ -22,7 +22,7 @@
 <body class="{% block body_class %}{% endblock %}">
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="/">
+        <a class="navbar-brand" href=" {{ url_for('homepage') }} ">
             <img src="/static/vinyl.png" width="30" height="30" class="d-inline-block align-top" alt=""
                 loading="lazy">
             <span>Playlistify</span>
@@ -55,7 +55,7 @@
     
                 {% if g.user %}
                 <li class="nav-item">
-                    <form class="form-inline my-2 my-lg-0" action="#" method="GET">
+                    <form class="form-inline my-2 my-lg-0" action="{{ url_for('show_search_results_globally')}}" method="GET">
                         <input class="form-control" name="song_name" placeholder="Search Playlistify" id="search">
                         <button class="btn btn-outline-light" type="submit">
                             <i class="fas fa-search"></i>

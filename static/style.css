@@ -76,8 +76,22 @@ hr {
     padding: 10px;
 }
 
+.card-body-home{
+    padding: 10px;
+    height: 30vh;
+    justify-content: center;
+    align-items: center;
+
+}
+
 .card-body .card-title {
     font-size: 1.2rem;
+}
+
+.hover-card:hover {
+    transform: scale(1.02); 
+    transition: transform 0.3s ease; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
 }
 
 .playlist-card.bg-dark:hover {
@@ -121,4 +135,8 @@ hr {
 
 .song-image-small {
         max-width: 64px; 
+    }
+
+.custom-dropdown:hover .dropdown-menu {
+    display: block;
     }

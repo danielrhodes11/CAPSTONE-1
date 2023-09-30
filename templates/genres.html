@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Explore Genres</h2>
+    <div class="card-columns">
+        {% for genre in genres %}
+        <a href="{{ url_for('show_songs_by_genre', genre_name=genre) }}" class="card-link">
+            <div class="card hover-card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ genre }}</h5>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

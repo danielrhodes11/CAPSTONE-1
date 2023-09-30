@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4 mb-5">Search Results</h1>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <ul class="list-group">
+                {% for song in songs %}
+                <a href="{{ url_for('show_song_details', spotify_id=song.id) }}" class="list-group-item list-group-item-action bg-dark text-light mb-3">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <img src="{{ song.album.images[0].url }}" alt="{{ song.name }}" class="img-fluid">
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="text-light">{{ song.name }}</h5>
+                            <p class="mb-0">by {{ song.artists[0].name }}</p>
+                        </div>
+                        <div class="col-md-2">
+                            <!-- Bootstrap hover dropdown menu -->
+                            <form method="POST" class="add-song-form" action="{{ url_for('add_song_to_playlist_globally') }}">
+                                <input type="hidden" name="spotify_id" value="{{ song.id }}">
+                                <div class="dropdown custom-dropdown" style="position: relative;">
+                                    <button class="btn btn-secondary btn-sm mt-2 dropdown-toggle" type="button" id="playlistDropdown_{{ song.id }}" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                        <i class="fas fa-plus fa-sm"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="playlistDropdown_{{ song.id }}">
+                                        {% for playlist in user_playlists %}
+                                            <li>
+                                                <button class="dropdown-item" type="submit" name="playlist_id" value="{{ playlist.id }}">{{ playlist.title }}</button>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

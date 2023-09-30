@@ -2,19 +2,19 @@
 
 {% block content %}
 <div class="container">
-    <div class="row">
-      <div class="col-md-6 offset-md-3">
-        <form method="GET" action="{{ url_for('show_search_results', playlist_id=playlist.id)}}" class="mt-4">
-          <div class="input-group">
-            <input type="text" class="form-control" id="song_name" name="song_name" placeholder="Search for songs...">
-            <div class="input-group-append">
-              <button type="submit" class="btn btn-success">Search</button>
-            </div>
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <form method="GET" action="{{ url_for('show_search_results', playlist_id=playlist.id)}}" class="mt-4">
+        <div class="input-group">
+          <input type="text" class="form-control" id="song_name" name="song_name" placeholder="Search for songs...">
+          <div class="input-group-append">
+            <button type="submit" class="btn btn-success">Search</button>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   </div>
+</div>
 <div class="container">
     <h1 class="mt-4 mb-5">Songs</h1>
 

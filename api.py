@@ -98,14 +98,54 @@ def get_song_info(token, spotify_id):
             "release_date": json_response.get("album", {}).get("release_date"),
             "preview": json_response.get("preview_url")
         }
-
-    # Handle API request errors
     print(
         f"Failed to fetch song info for ID {spotify_id}. Status code: {response.status_code}")
     return None
 
 
+def get_genres(token):
+    base_url = "https://api.spotify.com/v1/recommendations/available-genre-seeds"
+    headers = get_auth_header(token)
+
+    response = get(base_url, headers=headers)
+    available_genres = json.loads(response.content)["genres"]
+
+    return available_genres
+
+
+def get_songs_by_genre(token, genre):
+    base_url = "https://api.spotify.com/v1/recommendations/available-genre-seeds"
+    headers = get_auth_header(token)
+
+    response = get(base_url, headers=headers)
+    available_genres = json.loads(response.content)["genres"]
+
+    if genre not in available_genres:
+        print("Genre not found")
+        return None
+
+    recommendations_url = "https://api.spotify.com/v1/recommendations"
+    params = {
+        "seed_genres": genre,
+        "limit": 25
+    }
+
+    response = get(recommendations_url, params=params, headers=headers)
+    tracks = json.loads(response.content)["tracks"]
+
+    return tracks
+
+
 token = get_token()
+
+# tracks = get_songs_by_genre(token, "country")
+# for track in tracks:
+#     print(track["name"])
+
+
+# tracks = get_songs_by_genre(token, "christian")
+# for track in tracks:
+#     print(track["name"])
 
 # response = search_for_song(token, "Praise Him Forever")
 # spotify_id = response[0]["id"]

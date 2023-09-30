@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import Unauthorized
 from config.dev_config import DevConfig
 from config.test_config import TestConfig
-from api import token, search_for_song, get_song_info
+from api import token, search_for_song, get_song_info, get_genres, get_songs_by_genre
 
 CURR_USER_KEY = "curr_user"
 
@@ -55,10 +55,22 @@ def do_logout():
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
+############################
+
+
+def get_user_playlists(user):
+    """Get user playlists"""
+    user_playlists = Playlists.query.filter_by(user_id=user.id).all()
+
+    return user_playlists
+############################
+
 
 @app.route("/")
 def homepage():
     """Show homepage"""
+    if not g.user:
+        return render_template("home-anon.html")
 
     return render_template("home.html")
 
@@ -410,9 +422,122 @@ def show_song_details(spotify_id):
     return render_template("song_details.html", song_info=song_info)
 
 
-######################
-# GLOBAL SEARCH ROUTES
-######################
+##################
+#  GENRE ROUTES
+##################
+
+@app.route("/genres")
+def show_genres():
+    """Show list of genres"""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    genres = get_genres(token)
+
+    return render_template("genres.html", genres=genres)
+
+
+@app.route("/genres/<string:genre_name>")
+def show_songs_by_genre(genre_name):
+    """Show songs by genre"""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    # Assume you have a function to fetch the user's playlists based on g.user (the logged-in user).
+    user_playlists = get_user_playlists(g.user)
+
+    # Do not specify selected_playlist_id when searching by genre
+    selected_playlist_id = None
+
+    songs = get_songs_by_genre(token, genre_name)
+
+    return render_template("songs_by_genre.html", songs=songs, genre_name=genre_name, user_playlists=user_playlists, selected_playlist_id=selected_playlist_id)
+
+
+##################
+#  GLOBALLY ADD TO SPECIFIC PLAYLIST
+##################
+
+@app.route("/playlists/add-song", methods=["POST"])
+def add_song_to_playlist_globally():
+    """Add song to playlist from anywhere in the app"""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    playlist_id = request.form.get("playlist_id")
+    spotify_id = request.form.get("spotify_id")
+
+    song_info = get_song_info(token, spotify_id)
+
+    if song_info is not None:
+
+        playlist_track = PlaylistTracks(
+            playlist_id=playlist_id,
+            title=song_info["title"],
+            artist=song_info["artist"],
+            album=song_info["album"],
+            image=song_info["image"],
+            release_date=song_info["release_date"],
+            preview=song_info.get("preview"),
+            spotify_id=spotify_id
+        )
+
+        db.session.add(playlist_track)
+        db.session.commit()
+
+        flash("Song added to playlist successfully!", "success")
+    else:
+        flash("Failed to add the song to the playlist.", "danger")
+
+    return redirect(url_for("show_playlist", playlist_id=playlist_id))
+
+
+##################
+# GLOBALLY SEARCH FOR SONG/ARTISTS
+##################
+
+@app.route("/search")
+def search_for_songs_globally():
+    """Show search for songs form"""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    form = SongForm()
+
+    return render_template("search.html", form=form)
+
+# search for songs globally
+
+
+@app.route("/search/results")
+def show_search_results_globally():
+    """Show search results"""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    song_name = request.args.get("song_name")
+
+    if not song_name:
+
+        flash("Please enter a song name for the search.", "warning")
+        return redirect("/search")
+
+    spotify_id = request.args.get("spotify_id")
+    user_playlists = get_user_playlists(g.user)
+
+    response = search_for_song(token, song_name)
+
+    return render_template("global_search_results.html", songs=response, spotify_id=spotify_id, user_playlists=user_playlists)
 
 
 ######## things to potentially add##########
