@@ -65,13 +65,62 @@ def get_songs_by_artist(token, artist_id):
     return json_response
 
 
+def search_for_song(token, song_name):
+    base_url = "https://api.spotify.com/v1/search"
+    headers = get_auth_header(token)
+
+    params = {
+        "q": song_name,
+        "type": "track",
+        "limit": 10
+    }
+
+    response = get(base_url, params=params, headers=headers)
+    json_response = json.loads(response.content)["tracks"]["items"]
+
+    return json_response
+
+
+def get_song_info(token, spotify_id):
+    base_url = "https://api.spotify.com/v1/tracks/"
+    headers = get_auth_header(token)
+
+    query_url = f"{base_url}{spotify_id}"
+    response = get(query_url, headers=headers)
+
+    if response.status_code == 200:
+        json_response = json.loads(response.content)
+        return {
+            "title": json_response.get("name"),
+            "artist": json_response["artists"][0].get("name"),
+            "album": json_response.get("album", {}).get("name"),
+            "image": json_response.get("album", {}).get("images", [{}])[0].get("url"),
+            "release_date": json_response.get("album", {}).get("release_date"),
+            "preview": json_response.get("preview_url")
+        }
+
+    # Handle API request errors
+    print(
+        f"Failed to fetch song info for ID {spotify_id}. Status code: {response.status_code}")
+    return None
+
+
 token = get_token()
-response = search_for_artist(token, "The Beatles")
-artist_id = response["id"]
 
-print(response["name"])
+response = search_for_song(token, "Praise Him Forever")
+spotify_id = response[0]["id"]
+print(spotify_id)
 
-tracks = get_songs_by_artist(token, artist_id)
+# print(response["name"])
 
-for track in tracks:
-    print(track["name"])
+# tracks = get_songs_by_artist(token, artist_id)
+
+# for track in tracks:
+#     print(track["name"])
+
+
+# look into refresher token for effinecy
+
+# home page for anon/non anon users
+
+# https://developer.spotify.com/documentation/general/guides/authorization-guide/#client-credentials-flow

@@ -111,3 +111,13 @@ hr {
     width: 150px; 
     height: 150px;
     }
+
+.album-cover {
+        width: 64px;
+        height: 64px;
+        object-fit: cover;
+    }
+
+.song-image-small {
+        max-width: 64px; 
+    }

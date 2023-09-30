@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <img src="{{ song_info.image }}" class="card-img-top" alt="{{ song_info.title }}">
+                <div class="card-body">
+                    <h2 class="card-title text-center">{{ song_info.title }}</h2>
+                    <p class="card-text text-center">
+                        <small class="text-muted">Release Date: {{ song_info.release_date }}</small><br>
+                        <small class="text-muted">Artist: {{ song_info.artist }}</small>
+                    </p>
+                    {% if song_info.preview %}
+                        <div class="text-center">
+                            <audio controls>
+                                <source src="{{ song_info.preview }}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    {% else %}
+                        <p class="text-center text-muted">No preview available for this song.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

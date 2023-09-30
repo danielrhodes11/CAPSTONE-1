@@ -1,14 +1,14 @@
 import os
-from flask import Flask, render_template, redirect, flash, session, g
+from flask import Flask, render_template, redirect, flash, session, g, request, url_for
 import requests
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Playlists, Tracks, PlaylistTracks
+from models import db, connect_db, User, Playlists, PlaylistTracks
 from forms import RegisterForm, LoginForm, EditUserForm, PlaylistForm, SongForm
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import Unauthorized
 from config.dev_config import DevConfig
 from config.test_config import TestConfig
-from api import get_token, get_auth_header
+from api import token, search_for_song, get_song_info
 
 CURR_USER_KEY = "curr_user"
 
@@ -135,6 +135,10 @@ def logout():
 def show_user(user_id):
     """Show user profile"""
 
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
     user = User.query.get_or_404(user_id)
 
     playlists = Playlists.query.filter_by(user_id=user_id).all()
@@ -193,7 +197,9 @@ def delete_user(user_id):
     return redirect("/signup")
 
 
-# PLAYLIST ROUTES
+###################################
+#  PLAYLIST ROUTES
+###################################
 
 @app.route("/users/<int:user_id>/playlists/new", methods=["GET", "POST"])
 def create_playlist(user_id):
@@ -234,7 +240,11 @@ def show_playlist(playlist_id):
     playlist = Playlists.query.get_or_404(playlist_id)
     user = User.query.get_or_404(playlist.user_id)
 
-    return render_template("playlist_details.html", playlist=playlist, user=user)
+    # Retrieve the playlist tracks associated with the playlist
+    playlist_tracks = PlaylistTracks.query.filter_by(
+        playlist_id=playlist_id).all()
+
+    return render_template("playlist_details.html", playlist=playlist, user=user, playlist_tracks=playlist_tracks)
 
 
 @app.route("/playlists/<int:playlist_id>/edit", methods=["GET", "POST"])
@@ -283,5 +293,129 @@ def delete_playlist(playlist_id):
     flash("Playlist deleted!", "success")
     return redirect(f"/users/{g.user.id}")
 
+########### SEARCH AND ADD SONGS TO PLAYLISTS############
 
+
+@app.route("/playlists/<int:playlist_id>/search")
+def search_for_songs(playlist_id):
+    """Show search for songs form"""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    playlist = Playlists.query.get_or_404(playlist_id)
+
+    if playlist.user_id != g.user.id:
+        raise Unauthorized()
+
+    form = SongForm()
+
+    return render_template("search_for_songs.html", form=form, playlist=playlist)
+
+
+@app.route("/playlists/<int:playlist_id>/search/results")
+def show_search_results(playlist_id):
+    """Show search results"""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    playlist = Playlists.query.get_or_404(playlist_id)
+
+    if playlist.user_id != g.user.id:
+        raise Unauthorized()
+
+    # Get the search term (song_name) from the request arguments
+    song_name = request.args.get("song_name")
+
+    if not song_name:
+        # Handle the case where there's no song_name provided
+        flash("Please enter a song name for the search.", "warning")
+        return redirect(f"/playlists/{playlist_id}/search")
+
+    spotify_id = request.args.get("spotify_id")
+
+    # Make a request to the Spotify API to search for songs
+    response = search_for_song(token, song_name)
+
+    return render_template("search_results.html", playlist=playlist, songs=response, spotify_id=spotify_id)
+
+
+@app.route("/playlists/<int:playlist_id>/add-song", methods=["POST"])
+def add_song_to_playlist(playlist_id):
+    # Get the spotify_id from the form or request data
+    spotify_id = request.form.get("spotify_id")
+
+    # Retrieve more information about the song from the Spotify API
+    song_info = get_song_info(token, spotify_id)  # Pass the token
+
+    if song_info is not None:
+        # Create the PlaylistTracks object with the retrieved information
+        playlist_track = PlaylistTracks(
+            playlist_id=playlist_id,
+            title=song_info["title"],
+            artist=song_info["artist"],
+            album=song_info["album"],
+            image=song_info["image"],
+            release_date=song_info["release_date"],
+            preview=song_info.get("preview"),
+            spotify_id=spotify_id
+        )
+
+        db.session.add(playlist_track)
+        db.session.commit()
+
+        flash("Song added to playlist successfully!", "success")
+    else:
+        flash("Failed to add the song to the playlist.", "danger")
+
+    # Redirect back to the playlist details page or wherever you want
+    return redirect(url_for("show_playlist", playlist_id=playlist_id))
+
+
+@app.route("/playlists/<int:playlist_id>/delete-song/<int:playlist_track_id>", methods=["POST"])
+def delete_song_from_playlist(playlist_id, playlist_track_id):
+    """Delete song from playlist"""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    playlist_track = PlaylistTracks.query.get_or_404(playlist_track_id)
+
+    if playlist_track.playlist_id != playlist_id:
+        raise Unauthorized()
+
+    db.session.delete(playlist_track)
+    db.session.commit()
+
+    flash("Song deleted!", "success")
+    return redirect(url_for("show_playlist", playlist_id=playlist_id))
+
+######################
 # SONG ROUTES
+######################
+
+
+@app.route("/songs/<string:spotify_id>")
+def show_song_details(spotify_id):
+    """Show song details"""
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    song_info = get_song_info(token, spotify_id)
+
+    return render_template("song_details.html", song_info=song_info)
+
+
+######## things to potentially add##########
+
+# block menu bar.
+# have login/signup be one link
+# use draw.io to make a diagram of the app
+
+
+# https://app.diagrams.net

@@ -10,36 +10,39 @@
             </div>
         </div>
         <div class="col-md-9">
-
             <div class="d-flex justify-content-between align-items-center">
                 <h2>{{ playlist.title }}</h2>
                 <a href="{{ url_for('edit_playlist', playlist_id=playlist.id) }}" class="btn btn-outline-primary">Edit Playlist</a>
-                <!-- Add Song Button-->
-                <button class="btn btn-outline-success">Add Song</button>
+                <!-- Plus Sign Icon to Take You to the Search Link -->
+                <a href="{{ url_for('search_for_songs', playlist_id=playlist.id) }}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Add Songs
+                </a>
             </div>
             <p>{{ playlist.description }}</p>
             <hr>
             <!-- Song List -->
-            {% if user.tracks|length == 0 %}
-                <div class="col-md-12">
-                    <p>No songs yet.</p>
-                </div>
-            {% else %}
-                <ul class="list-group">
-                    {% for song in playlist.songs %}
-                        <li class="list-group-item">
-                            <!-- Song Details -->
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <img src="{{ song.image }}" class="song-image" alt="{{ song.title }}">
-                                    <span class="ml-3">{{ track.title }} - {{ track.artist }}</span>
-                                </div>
-                                <!-- Add Song to Playlist Button (if needed) -->
-                                <button class="btn btn-outline-success">Add</button>
+            <div class="list-group">
+                {% for song in playlist_tracks %}
+                <a href="{{ url_for('show_song_details', spotify_id=song.spotify_id) }}" class="list-group-item list-group-item-action bg-dark text-light mb-3">
+                        <!-- Song Details -->
+                        <div class="media">
+                            <img src="{{ song.image }}" class="mr-3 song-image-small" alt="{{ song.title }}">
+                            <div class="media-body">
+                                <h5 class="mt-0">{{ song.title }}</h5>
+                                <p>{{ song.artist }}</p>
                             </div>
-                        </li>
-                    {% endfor %}
-                </ul>
+                            <form method="POST" action="{{ url_for('delete_song_from_playlist', playlist_id=playlist.id, playlist_track_id=song.id) }}">
+                                <input type="hidden" name="_method" value="POST">
+                                <button type="submit" class="btn btn-sm">
+                                    <i class="fas fa-trash" style="color: rgb(165, 151, 151);"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+            {% if playlist_tracks|length == 0 %}
+                <p class="mt-3">No songs yet.</p>
             {% endif %}
         </div>
     </div>

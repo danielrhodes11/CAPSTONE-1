@@ -2,7 +2,8 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Relationship
+from sqlalchemy import String
 
 
 db = SQLAlchemy()
@@ -86,7 +87,7 @@ class Playlists(db.Model):
         "users.id", ondelete="cascade"), nullable=False)
 
     tracks = db.relationship(
-        "Tracks", secondary="playlist_tracks", backref="playlists")
+        "PlaylistTracks", backref="playlist", cascade="all, delete-orphan")
 
     def serialize(self):
         """serialize playlist data"""
@@ -108,9 +109,16 @@ class PlaylistTracks(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     playlist_id = db.Column(db.Integer, db.ForeignKey(
         "playlists.id", ondelete="cascade"), nullable=False)
-    track_id = db.Column(db.Integer, db.ForeignKey(
-        "tracks.id", ondelete="cascade"), nullable=False)
-    ordinal = db.Column(db.Integer, nullable=False)
+    title = db.Column(db.Text, nullable=False)
+    artist = db.Column(db.Text, nullable=False)
+    album = db.Column(db.Text, nullable=False)
+    image = db.Column(db.Text, nullable=False)
+    release_date = db.Column(db.Text, nullable=False)
+    preview = db.Column(db.Text, nullable=False)
+    spotify_id = db.Column(db.Text, nullable=False)
+
+    playlist_id = db.Column(db.Integer, db.ForeignKey(
+        "playlists.id", ondelete="cascade"), nullable=False)
 
     def serialize(self):
         """serialize playlist tracks data"""
@@ -118,31 +126,6 @@ class PlaylistTracks(db.Model):
         return {
             "id": self.id,
             "playlist_id": self.playlist_id,
-            "track_id": self.track_id,
-            "ordinal": self.order
-        }
-
-
-class Tracks(db.Model):
-    """tracks table"""
-
-    __tablename__ = "tracks"
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.Text, nullable=False)
-    artist = db.Column(db.Text, nullable=False)
-    album = db.Column(db.Text, nullable=False)
-    image = db.Column(db.Text, nullable=False)
-    genre = db.Column(db.Text, nullable=False)
-    release_date = db.Column(db.Integer, nullable=False)
-    preview = db.Column(db.Text, nullable=False)
-    spotify_id = db.Column(db.Text, nullable=False)
-
-    def serialize(self):
-        """serialize track data"""
-
-        return {
-            "id": self.id,
             "title": self.title,
             "artist": self.artist,
             "album": self.album,
@@ -150,7 +133,7 @@ class Tracks(db.Model):
             "genre": self.genre,
             "release_date": self.release_date,
             "preview": self.preview,
-            "spotify_id": self.spotify_id
+            "spotify_id": self.spotify_id,
         }
 
 
