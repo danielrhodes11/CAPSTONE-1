@@ -240,7 +240,6 @@ def show_playlist(playlist_id):
     playlist = Playlists.query.get_or_404(playlist_id)
     user = User.query.get_or_404(playlist.user_id)
 
-    # Retrieve the playlist tracks associated with the playlist
     playlist_tracks = PlaylistTracks.query.filter_by(
         playlist_id=playlist_id).all()
 
@@ -327,17 +326,15 @@ def show_search_results(playlist_id):
     if playlist.user_id != g.user.id:
         raise Unauthorized()
 
-    # Get the search term (song_name) from the request arguments
     song_name = request.args.get("song_name")
 
     if not song_name:
-        # Handle the case where there's no song_name provided
+
         flash("Please enter a song name for the search.", "warning")
         return redirect(f"/playlists/{playlist_id}/search")
 
     spotify_id = request.args.get("spotify_id")
 
-    # Make a request to the Spotify API to search for songs
     response = search_for_song(token, song_name)
 
     return render_template("search_results.html", playlist=playlist, songs=response, spotify_id=spotify_id)
@@ -345,14 +342,13 @@ def show_search_results(playlist_id):
 
 @app.route("/playlists/<int:playlist_id>/add-song", methods=["POST"])
 def add_song_to_playlist(playlist_id):
-    # Get the spotify_id from the form or request data
+
     spotify_id = request.form.get("spotify_id")
 
-    # Retrieve more information about the song from the Spotify API
-    song_info = get_song_info(token, spotify_id)  # Pass the token
+    song_info = get_song_info(token, spotify_id)
 
     if song_info is not None:
-        # Create the PlaylistTracks object with the retrieved information
+
         playlist_track = PlaylistTracks(
             playlist_id=playlist_id,
             title=song_info["title"],
@@ -371,7 +367,6 @@ def add_song_to_playlist(playlist_id):
     else:
         flash("Failed to add the song to the playlist.", "danger")
 
-    # Redirect back to the playlist details page or wherever you want
     return redirect(url_for("show_playlist", playlist_id=playlist_id))
 
 

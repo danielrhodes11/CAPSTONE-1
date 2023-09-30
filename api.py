@@ -107,9 +107,9 @@ def get_song_info(token, spotify_id):
 
 token = get_token()
 
-response = search_for_song(token, "Praise Him Forever")
-spotify_id = response[0]["id"]
-print(spotify_id)
+# response = search_for_song(token, "Praise Him Forever")
+# spotify_id = response[0]["id"]
+# print(spotify_id)
 
 # print(response["name"])
 
