@@ -3,6 +3,7 @@ import os
 import base64
 from requests import get, post
 import json
+import time
 
 load_dotenv()
 
@@ -10,25 +11,34 @@ load_dotenv()
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
+token_expiration = 0
+
 
 def get_token():
-    auth_string = client_id + ":" + client_secret
-    auth_bytes = auth_string.encode("utf-8")
-    auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")
+    global token_expiration
+    current_time = time.time()
+    if token_expiration - time.time() < 60:
+        auth_string = client_id + ":" + client_secret
+        auth_bytes = auth_string.encode("utf-8")
+        auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")
 
-    url = "https://accounts.spotify.com/api/token"
-    headers = {
-        "Authorization": "Basic " + auth_base64,
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
+        url = "https://accounts.spotify.com/api/token"
+        headers = {
+            "Authorization": "Basic " + auth_base64,
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
 
-    data = {"grant_type": "client_credentials"}
+        data = {"grant_type": "client_credentials"}
 
-    response = post(url, headers=headers, data=data)
-    json_response = json.loads(response.content)
-    access_token = json_response["access_token"]
+        response = post(url, headers=headers, data=data)
+        json_response = json.loads(response.content)
+        access_token = json_response["access_token"]
 
-    return access_token
+        token_expiration = current_time + 3600
+
+        return access_token
+    else:
+        return access_token
 
 
 def get_auth_header(token):
@@ -136,6 +146,18 @@ def get_songs_by_genre(token, genre):
     return tracks
 
 
+def is_valid_spotify_id(token, spotify_id):
+    base_url = "https://api.spotify.com/v1/tracks/"
+    headers = get_auth_header(token)
+
+    query_url = f"{base_url}{spotify_id}"
+    response = get(query_url, headers=headers)
+
+    if response.status_code == 200:
+        return True
+    return False
+
+
 token = get_token()
 
 # tracks = get_songs_by_genre(token, "country")
@@ -160,7 +182,5 @@ token = get_token()
 
 
 # look into refresher token for effinecy
-
-# home page for anon/non anon users
 
 # https://developer.spotify.com/documentation/general/guides/authorization-guide/#client-credentials-flow

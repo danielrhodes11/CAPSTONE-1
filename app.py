@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import Unauthorized
 from config.dev_config import DevConfig
 from config.test_config import TestConfig
-from api import token, search_for_song, get_song_info, get_genres, get_songs_by_genre
+from api import token, search_for_song, get_song_info, get_genres, get_songs_by_genre, is_valid_spotify_id
 
 CURR_USER_KEY = "curr_user"
 
@@ -416,6 +416,8 @@ def show_song_details(spotify_id):
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
+    if not is_valid_spotify_id(token, spotify_id):
+        return render_template("404.html"), 404
 
     song_info = get_song_info(token, spotify_id)
 
@@ -538,6 +540,17 @@ def show_search_results_globally():
     response = search_for_song(token, song_name)
 
     return render_template("global_search_results.html", songs=response, spotify_id=spotify_id, user_playlists=user_playlists)
+
+
+##################
+# ERROR HANDLING
+##################
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """404 NOT FOUND page."""
+
+    return render_template('404.html'), 404
 
 
 ######## things to potentially add##########

@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<a href="#" onclick="window.history.back();" class="btn btn-secondary btn-sm">
+    <i class="bi bi-arrow-left"></i>Back
+</a>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card">
+            <div class="card mb-5"> 
                 <img src="{{ song_info.image }}" class="card-img-top" alt="{{ song_info.title }}">
                 <div class="card-body">
                     <h2 class="card-title text-center">{{ song_info.title }}</h2>
