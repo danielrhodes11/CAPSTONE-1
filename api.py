@@ -16,7 +16,7 @@ token_expiration = 0
 
 def get_token():
     global token_expiration
-    global access_token
+    global token
     current_time = time.time()
 
     if token_expiration - current_time < 60:
@@ -36,12 +36,12 @@ def get_token():
         json_response = json.loads(response.content)
 
         if "access_token" in json_response:
-            access_token = json_response["access_token"]
+            token = json_response["access_token"]
             token_expiration = current_time + 3600
         else:
             print("Access token not found in response:", json_response)
 
-    return access_token
+    return token
 
 
 def get_auth_header(token):
@@ -162,29 +162,3 @@ def is_valid_spotify_id(token, spotify_id):
 
 
 _token = get_token()
-
-
-# tracks = get_songs_by_genre(token, "country")
-# for track in tracks:
-#     print(track["name"])
-
-
-# tracks = get_songs_by_genre(token, "christian")
-# for track in tracks:
-#     print(track["name"])
-
-# response = search_for_song(token, "Praise Him Forever")
-# spotify_id = response[0]["id"]
-# print(spotify_id)
-
-# print(response["name"])
-
-# tracks = get_songs_by_artist(token, artist_id)
-
-# for track in tracks:
-#     print(track["name"])
-
-
-# look into refresher token for effinecy
-
-# https://developer.spotify.com/documentation/general/guides/authorization-guide/#client-credentials-flow
