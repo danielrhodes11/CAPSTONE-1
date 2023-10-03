@@ -5,13 +5,13 @@ cached-property==1.5.2
 cachetools==5.3.1
 certifi==2023.7.22
 charset-normalizer==3.2.0
-click==8.1.7
+click>=7.1,<9.0  # Loosened version constraint for click
 dnspython==2.4.2
 docker==4.3.1
 dockerpty==0.4.1
 docopt==0.6.2
 email-validator==2.0.0.post2
-Flask==2.3.3
+Flask>=2.0,<3.0  # Loosened version constraint for Flask
 Flask-Bcrypt==1.0.1
 Flask-DebugToolbar==0.13.1
 Flask-Migrate==4.0.5
@@ -50,7 +50,7 @@ six==1.16.0
 smmap==5.0.1
 spotipy==2.23.0
 spython==0.0.79
-SQLAlchemy==2.0.20
+SQLAlchemy>=1.4,<3.0  # Loosened version constraint for SQLAlchemy
 sqlalchemy-orm==1.2.10
 typing-inspect==0.9.0
 typing_extensions==4.8.0
