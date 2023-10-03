@@ -48,3 +48,15 @@ class TestSpotifyApi(TestCase):
         invalid_id = "invalid_id"
         self.assertTrue(is_valid_spotify_id(token, valid_id))
         self.assertFalse(is_valid_spotify_id(token, invalid_id))
+
+    def test_invalid_spotify_id(self):
+        """Test invalid spotify id."""
+        token = get_token()
+        invalid_id = "invalid_id"
+        self.assertFalse(is_valid_spotify_id(token, invalid_id))
+
+    def test_get_songs_by_genre_invalid_genre(self):
+        """Test get_songs_by_genre function with invalid genre."""
+        token = get_token()
+        tracks = get_songs_by_genre(token, "invalid_genre")
+        self.assertIsNone(tracks)
