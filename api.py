@@ -16,8 +16,11 @@ token_expiration = 0
 
 def get_token():
     global token_expiration
+    global access_token
     current_time = time.time()
-    if token_expiration - time.time() < 60:
+    access_token = None
+
+    if token_expiration - current_time < 60:
         auth_string = client_id + ":" + client_secret
         auth_bytes = auth_string.encode("utf-8")
         auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")
@@ -32,13 +35,14 @@ def get_token():
 
         response = post(url, headers=headers, data=data)
         json_response = json.loads(response.content)
-        access_token = json_response["access_token"]
 
-        token_expiration = current_time + 3600
+        if "access_token" in json_response:
+            access_token = json_response["access_token"]
+            token_expiration = current_time + 3600
+        else:
+            print("Access token not found in response:", json_response)
 
-        return access_token
-    else:
-        return access_token
+    return access_token
 
 
 def get_auth_header(token):
@@ -158,7 +162,8 @@ def is_valid_spotify_id(token, spotify_id):
     return False
 
 
-token = get_token()
+_token = get_token()
+
 
 # tracks = get_songs_by_genre(token, "country")
 # for track in tracks:

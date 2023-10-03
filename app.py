@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import Unauthorized
 from config.dev_config import DevConfig
 from config.test_config import TestConfig
-from api import token, search_for_song, get_song_info, get_genres, get_songs_by_genre, is_valid_spotify_id
+from api import search_for_song, get_song_info, get_genres, get_songs_by_genre, is_valid_spotify_id, get_token
 
 CURR_USER_KEY = "curr_user"
 
@@ -351,7 +351,7 @@ def show_search_results(playlist_id):
 
     spotify_id = request.args.get("spotify_id")
 
-    response = search_for_song(token, song_name)
+    response = search_for_song(get_token(), song_name)
 
     return render_template("search_results.html", playlist=playlist, songs=response, spotify_id=spotify_id)
 
@@ -361,7 +361,7 @@ def add_song_to_playlist(playlist_id):
 
     spotify_id = request.form.get("spotify_id")
 
-    song_info = get_song_info(token, spotify_id)
+    song_info = get_song_info(get_token(), spotify_id)
 
     if song_info is not None:
 
@@ -416,10 +416,10 @@ def show_song_details(spotify_id):
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
-    if not is_valid_spotify_id(token, spotify_id):
+    if not is_valid_spotify_id(get_token(), spotify_id):
         return render_template("404.html"), 404
 
-    song_info = get_song_info(token, spotify_id)
+    song_info = get_song_info(get_token(), spotify_id)
 
     return render_template("song_details.html", song_info=song_info)
 
@@ -436,7 +436,7 @@ def show_genres():
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
-    genres = get_genres(token)
+    genres = get_genres(get_token())
 
     return render_template("genres.html", genres=genres)
 
@@ -455,7 +455,7 @@ def show_songs_by_genre(genre_name):
     # Do not specify selected_playlist_id when searching by genre
     selected_playlist_id = None
 
-    songs = get_songs_by_genre(token, genre_name)
+    songs = get_songs_by_genre(get_token(), genre_name)
 
     return render_template("songs_by_genre.html", songs=songs, genre_name=genre_name, user_playlists=user_playlists, selected_playlist_id=selected_playlist_id)
 
@@ -475,7 +475,7 @@ def add_song_to_playlist_globally():
     playlist_id = request.form.get("playlist_id")
     spotify_id = request.form.get("spotify_id")
 
-    song_info = get_song_info(token, spotify_id)
+    song_info = get_song_info(get_token(), spotify_id)
 
     if song_info is not None:
 
@@ -537,7 +537,7 @@ def show_search_results_globally():
     spotify_id = request.args.get("spotify_id")
     user_playlists = get_user_playlists(g.user)
 
-    response = search_for_song(token, song_name)
+    response = search_for_song(get_token(), song_name)
 
     return render_template("global_search_results.html", songs=response, spotify_id=spotify_id, user_playlists=user_playlists)
 
