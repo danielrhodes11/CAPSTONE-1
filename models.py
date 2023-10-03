@@ -117,8 +117,8 @@ class PlaylistTracks(db.Model):
     preview = db.Column(db.Text, nullable=True)
     spotify_id = db.Column(db.Text, nullable=False)
 
-    playlist_id = db.Column(db.Integer, db.ForeignKey(
-        "playlists.id", ondelete="cascade"), nullable=False)
+    __table_args__ = (db.UniqueConstraint(
+        'playlist_id', 'spotify_id', name='unique_playlist_track'),)
 
     def serialize(self):
         """serialize playlist tracks data"""

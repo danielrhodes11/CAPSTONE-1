@@ -1,10 +1,10 @@
 import os
 from unittest import TestCase
-from models import db, User  # Import db from models module
+from models import db, User
 from config.test_config import *
 from app import app, CURR_USER_KEY
 from sqlalchemy.exc import IntegrityError
-from flask_bcrypt import Bcrypt  # Import Bcrypt
+from flask_bcrypt import Bcrypt
 
 
 bcrypt = Bcrypt()

@@ -358,28 +358,31 @@ def show_search_results(playlist_id):
 
 @app.route("/playlists/<int:playlist_id>/add-song", methods=["POST"])
 def add_song_to_playlist(playlist_id):
-
     spotify_id = request.form.get("spotify_id")
 
     song_info = get_song_info(get_token(), spotify_id)
 
     if song_info is not None:
+        try:
+            playlist_track = PlaylistTracks(
+                playlist_id=playlist_id,
+                title=song_info["title"],
+                artist=song_info["artist"],
+                album=song_info["album"],
+                image=song_info["image"],
+                release_date=song_info["release_date"],
+                preview=song_info.get("preview"),
+                spotify_id=spotify_id
+            )
 
-        playlist_track = PlaylistTracks(
-            playlist_id=playlist_id,
-            title=song_info["title"],
-            artist=song_info["artist"],
-            album=song_info["album"],
-            image=song_info["image"],
-            release_date=song_info["release_date"],
-            preview=song_info.get("preview"),
-            spotify_id=spotify_id
-        )
+            db.session.add(playlist_track)
+            db.session.commit()
 
-        db.session.add(playlist_track)
-        db.session.commit()
-
-        flash("Song added to playlist successfully!", "success")
+            flash("Song added to playlist successfully!", "success")
+        except IntegrityError:
+            # An IntegrityError occurs if the song already exists in the playlist
+            db.session.rollback()
+            flash("Song already exists in the playlist.", "danger")
     else:
         flash("Failed to add the song to the playlist.", "danger")
 
@@ -478,22 +481,26 @@ def add_song_to_playlist_globally():
     song_info = get_song_info(get_token(), spotify_id)
 
     if song_info is not None:
+        try:
+            playlist_track = PlaylistTracks(
+                playlist_id=playlist_id,
+                title=song_info["title"],
+                artist=song_info["artist"],
+                album=song_info["album"],
+                image=song_info["image"],
+                release_date=song_info["release_date"],
+                preview=song_info.get("preview"),
+                spotify_id=spotify_id
+            )
 
-        playlist_track = PlaylistTracks(
-            playlist_id=playlist_id,
-            title=song_info["title"],
-            artist=song_info["artist"],
-            album=song_info["album"],
-            image=song_info["image"],
-            release_date=song_info["release_date"],
-            preview=song_info.get("preview"),
-            spotify_id=spotify_id
-        )
+            db.session.add(playlist_track)
+            db.session.commit()
 
-        db.session.add(playlist_track)
-        db.session.commit()
-
-        flash("Song added to playlist successfully!", "success")
+            flash("Song added to playlist successfully!", "success")
+        except IntegrityError:
+            # An IntegrityError occurs if the song already exists in the playlist
+            db.session.rollback()
+            flash("Song already exists in the playlist.", "danger")
     else:
         flash("Failed to add the song to the playlist.", "danger")
 
