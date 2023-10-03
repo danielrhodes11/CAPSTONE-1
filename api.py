@@ -18,7 +18,6 @@ def get_token():
     global token_expiration
     global access_token
     current_time = time.time()
-    access_token = None
 
     if token_expiration - current_time < 60:
         auth_string = client_id + ":" + client_secret
