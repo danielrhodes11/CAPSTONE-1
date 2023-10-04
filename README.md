@@ -22,16 +22,11 @@ Add Songs to Playlists: Users can select songs from search results and add them 
 
 4. Genre-Based Song Recommendations
 Discover Music by Genre: Explore new music by browsing songs based on genres. Playlistify provides a curated list of songs within each genre, helping users discover new tracks.
+
 5. User Profile and Customization
 User Profile: Users can customize their profiles by adding a profile picture and personal details. Share your music preferences with the Playlistify community.
 
 Playlist Artwork: Users can add artwork to their playlists, making them visually appealing and distinctive.
-
-6. Playlist Sharing
-Share Playlists: Share your playlists with friends and the Playlistify community. Allow others to listen to your handpicked songs.
-User Flow
-Registration and Login
-Visit the Playlistify website at https://playlistify.onrender.com
 
 New users can click on "Sign Up" to create an account. Provide your email, choose a secure password, and complete the registration process.
 
@@ -40,9 +35,9 @@ Returning users can click on "Log In" and enter their credentials to access thei
 Create and Manage Playlists
 Once logged in, you'll land on your Dashboard. To create a new playlist, click on "Create Playlist," provide a name and description, and click "Create."
 
-To edit an existing playlist, navigate to your User profile, select the playlist you want to edit, and click "Edit." Make your desired changes and save.
+To edit an existing playlist, navigate to "My PLaylists", select the playlist you want to edit, and click "Edit." Make your desired changes and save.
 
-To delete a playlist, navigate to your User profile, select the playlist you want to delete, and click "Edit", and select "Delete Playlist" and the bottom of the page. Be cautious; this action is irreversible.
+To delete a playlist, navigate to "My PLaylists", select the playlist you want to delete, and click "Edit", and select "Delete Playlist" and the bottom of the page. Be cautious; this action is irreversible.
 
 Search for Songs
 To search for songs, use the search bar at the top of the page. Enter the song's name, and Playlistify will display matching results.
