@@ -2,7 +2,6 @@
 
 {% block content %}
 
-
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-3">
@@ -27,28 +26,28 @@
                     <h5>Your Playlists</h5>
                     <div class="row">
                         {% if user.playlists|length == 0 %}
-                            <p>No playlists yet.</p>
+                        <p>No playlists yet.</p>
                         {% else %}
-                            {% for playlist in user.playlists %}
-                            <div class="col-md-6 mb-3">
-                                <a href="{{ url_for('show_playlist', playlist_id=playlist.id) }}" class="text-decoration-none">
-                                    <div class="playlist-card bg-dark">
-                                        <!-- Playlist Artwork on the Left -->
-                                        <div class="playlist-artwork">
-                                            {% if playlist.image %}
-                                            <img src="{{ playlist.image }}" class="card-img-top" alt="{{ playlist.title }}">
-                                            {% else %}
-                                            <img src="https://community.spotify.com/t5/image/serverpage/image-id/55829iC2AD64ADB887E2A5/image-size/large?v=v2&px=999" class="card-img-top" alt="{{ playlist.title }}">
-                                            {% endif %}
-                                        </div>
-                                        <!-- Playlist Title on the Right -->
-                                        <div class="card-body">
-                                            <h6 class="card-title">{{ playlist.title }}</h6>
-                                        </div>
+                        {% for playlist in user.playlists %}
+                        <div class="col-md-6 mb-3">
+                            <a href="{{ url_for('show_playlist', playlist_id=playlist.id) }}" class="text-decoration-none">
+                                <div class="playlist-card bg-dark">
+                                    <!-- Playlist Artwork on the Left -->
+                                    <div class="playlist-artwork">
+                                        {% if playlist.image %}
+                                        <img src="{{ playlist.image }}" class="card-img-top" alt="{{ playlist.title }}">
+                                        {% else %}
+                                        <img src="https://community.spotify.com/t5/image/serverpage/image-id/55829iC2AD64ADB887E2A5/image-size/large?v=v2&px=999" class="card-img-top" alt="{{ playlist.title }}">
+                                        {% endif %}
                                     </div>
-                                </a>
-                            </div>
-                            {% endfor %}
+                                    <!-- Playlist Title on the Right -->
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{ playlist.title }}</h6>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
                         {% endif %}
                     </div>
                 </div>
@@ -56,6 +55,5 @@
         </div>
     </div>
 </div>
-</style>
 
 {% endblock %}

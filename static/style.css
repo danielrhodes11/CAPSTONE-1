@@ -1,49 +1,64 @@
+/* Global Styles */
 body {
     color: #fff;
     background-image: url('/static/background.jpg');
     background-size: cover;
 }
 
-
-
 .navbar-brand {
-    color: #1DB954; 
+    color: #1DB954;
     font-weight: bold;
 }
-
 
 .navbar-nav .nav-item {
     margin-right: 10px;
 }
 
 .navbar-nav .nav-link {
-    color: #fff; 
+    color: #fff;
 }
 
 .navbar-nav .nav-link:hover {
-    color: #1DB954; 
+    color: #1DB954;
 }
 
 .user-profile-image-nav {
-    width: 30px; 
+    width: 30px;
     height: 30px;
-    border-radius: 50%; 
+    border-radius: 50%;
     object-fit: cover;
 }
 
+/* User Profile Card Styles */
+.user-profile-card {
+    background: linear-gradient(to bottom, #793232, #121212);
+    border: 1px solid #817e7e;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-profile-card .card-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.user-profile-card .card-text {
+    font-size: 1rem;
+}
+
 .card .user-profile-image {
-    width: 150px; 
+    width: 150px;
     height: 150px;
     border-radius: 50%;
-    }
+}
 
+/* Other Styles */
 .card {
-    background-color: #121212; 
-    color: #fff; 
+    background-color: #121212;
+    color: #fff;
 }
 
 hr {
-    background-color: #e9f1ec; 
+    background-color: #e9f1ec;
 }
 
 .playlist-card {
@@ -51,101 +66,85 @@ hr {
     align-items: center;
     background-color: #121212;
     color: #fff;
-    margin: 0 auto; 
-    height: 70px; 
+    margin: 0 auto;
+    height: 70px;
 }
 
-
-.playlist-artwork img{
-    width: 70px; 
-    height: 70px; 
+.playlist-artwork img {
+    width: 70px;
+    height: 70px;
     margin-right: 10px;
     display: flex;
-    justify-content: center; 
-    align-items: center; 
-    overflow: hidden; 
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 
 .playlist-artwork img.playlist-image {
     width: 100%;
     height: 100%;
-    object-fit: contain; 
+    object-fit: contain;
 }
-
-.user-profile-card {
-    height: 100%; 
-}
-
-.user-profile-image {
-    height: 100%; 
-    object-fit: cover; 
-    max-width: 100%;
-}
-
-
 
 .card-body {
     padding: 10px;
 }
 
-.card-body-home{
+.card-body-home {
     padding: 10px;
     height: 30vh;
     justify-content: center;
     align-items: center;
-
 }
 
-.card card-title {
+.card .card-title {
     font-size: 1.2rem;
-    white-space: wrap;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
 }
 
 .hover-card:hover {
-    transform: scale(1.02); 
-    transition: transform 0.3s ease; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    transform: scale(1.02);
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .playlist-card.bg-dark:hover {
     background-color: #252727 !important;
 }
 
-
 .playlist-hero {
-        position: relative;
-        overflow: hidden;
-        height: 400px; 
-    }
+    position: relative;
+    overflow: hidden;
+    height: 400px;
+}
 
 .playlist-hero img {
-        width: 100%;
-        height: auto;
-        object-fit: contain;
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
 
 .user-profile-image {
-    width: 150px; 
+    width: 150px;
     height: 150px;
-    }
+}
 
 .album-cover {
-        width: 64px;
-        height: 64px;
-        object-fit: cover;
-    }
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+}
 
 .song-image-small {
-        max-width: 64px; 
-    }
+    max-width: 64px;
+}
 
 .custom-dropdown:hover .dropdown-menu {
     display: block;
-    }
+}
