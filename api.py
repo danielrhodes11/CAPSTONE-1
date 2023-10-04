@@ -127,7 +127,7 @@ def get_genres(token):
     return available_genres
 
 
-def get_songs_by_genre(token, genre):
+def get_songs_by_genre(token, genre, offset=0):
     base_url = "https://api.spotify.com/v1/recommendations/available-genre-seeds"
     headers = get_auth_header(token)
 
@@ -141,7 +141,8 @@ def get_songs_by_genre(token, genre):
     recommendations_url = "https://api.spotify.com/v1/recommendations"
     params = {
         "seed_genres": genre,
-        "limit": 25
+        "limit": 25,
+        "offset": offset
     }
 
     response = get(recommendations_url, params=params, headers=headers)

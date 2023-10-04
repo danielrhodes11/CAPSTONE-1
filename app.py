@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, redirect, flash, session, g, request, url_for, jsonify
+from flask import Flask, render_template, redirect, flash, session, g, request, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Playlists, PlaylistTracks
 from forms import RegisterForm, LoginForm, EditUserForm, PlaylistForm, SongForm
@@ -8,7 +8,6 @@ from werkzeug.exceptions import Unauthorized
 from config.dev_config import DevConfig
 from config.test_config import TestConfig
 from api import search_for_song, get_song_info, get_genres, get_songs_by_genre, is_valid_spotify_id, get_token
-import re
 
 CURR_USER_KEY = "curr_user"
 
@@ -355,9 +354,11 @@ def show_search_results(playlist_id):
 
     spotify_id = request.args.get("spotify_id")
 
-    response = search_for_song(get_token(), song_name, offset=10)
+    offset = request.args.get("offset", default=0, type=int)
 
-    return render_template("search_results.html", playlist=playlist, songs=response, spotify_id=spotify_id, song_name=song_name, playlist_id=playlist_id)
+    response = search_for_song(get_token(), song_name, offset=offset)
+
+    return render_template("search_results.html", playlist=playlist, songs=response, spotify_id=spotify_id, song_name=song_name, playlist_id=playlist_id, offset=offset)
 
 
 @app.route("/playlists/<int:playlist_id>/add-song", methods=["POST"])
@@ -462,9 +463,10 @@ def show_songs_by_genre(genre_name):
     # Do not specify selected_playlist_id when searching by genre
     selected_playlist_id = None
 
-    songs = get_songs_by_genre(get_token(), genre_name)
+    offset = request.args.get("offset", default=0, type=int)
+    songs = get_songs_by_genre(get_token(), genre_name, offset=offset)
 
-    return render_template("songs_by_genre.html", songs=songs, genre_name=genre_name, user_playlists=user_playlists, selected_playlist_id=selected_playlist_id)
+    return render_template("songs_by_genre.html", songs=songs, genre_name=genre_name, user_playlists=user_playlists, selected_playlist_id=selected_playlist_id, offset=offset)
 
 
 ##################
@@ -541,16 +543,19 @@ def show_search_results_globally():
     song_name = request.args.get("song_name")
 
     if not song_name:
-
         flash("Please enter a song name for the search.", "warning")
         return redirect("/search")
 
     spotify_id = request.args.get("spotify_id")
     user_playlists = get_user_playlists(g.user)
 
-    response = search_for_song(get_token(), song_name)
+    # Get the offset from the URL query parameters, default to 0 if not provided
+    offset = request.args.get("offset", default=0, type=int)
 
-    return render_template("global_search_results.html", songs=response, spotify_id=spotify_id, user_playlists=user_playlists)
+    # Use the offset when calling search_for_song to paginate results
+    response = search_for_song(get_token(), song_name, offset=offset)
+
+    return render_template("global_search_results.html", songs=response, spotify_id=spotify_id, user_playlists=user_playlists, offset=offset, song_name=song_name)
 
 
 ##################
