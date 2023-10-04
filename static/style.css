@@ -46,9 +46,10 @@ body {
 }
 
 .card .user-profile-image {
-    width: 150px;
-    height: 150px;
+    max-width: 100%; /* Set maximum width to prevent overflow */
+    max-height: 100%; /* Set maximum height to prevent overflow */
     border-radius: 50%;
+    object-fit: cover; /* Maintain aspect ratio and fit within the container */
 }
 
 /* Other Styles */
