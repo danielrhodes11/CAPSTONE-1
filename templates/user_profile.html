@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-3">
             <!-- User Profile Card -->
-            <div class="card">
+            <div class="card user-profile-card">
                 <img src="{{ user.profile_image }}" onerror="this.src='/static/default-img.png'" class="user-profile-image">
                 <div class="card-body">
                     <h5 class="card-title">{{ user.username }}</h5>
@@ -33,7 +35,11 @@
                                     <div class="playlist-card bg-dark">
                                         <!-- Playlist Artwork on the Left -->
                                         <div class="playlist-artwork">
-                                            <img src="{{ playlist.image }}" class="card-img-top">
+                                            {% if playlist.image %}
+                                            <img src="{{ playlist.image }}" class="card-img-top" alt="{{ playlist.title }}">
+                                            {% else %}
+                                            <img src="https://community.spotify.com/t5/image/serverpage/image-id/55829iC2AD64ADB887E2A5/image-size/large?v=v2&px=999" class="card-img-top" alt="{{ playlist.title }}">
+                                            {% endif %}
                                         </div>
                                         <!-- Playlist Title on the Right -->
                                         <div class="card-body">
@@ -50,5 +56,6 @@
         </div>
     </div>
 </div>
+</style>
 
 {% endblock %}
