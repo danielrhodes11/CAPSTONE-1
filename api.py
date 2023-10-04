@@ -78,14 +78,15 @@ def get_songs_by_artist(token, artist_id):
     return json_response
 
 
-def search_for_song(token, song_name):
+def search_for_song(token, song_name, offset=0):
     base_url = "https://api.spotify.com/v1/search"
     headers = get_auth_header(token)
 
     params = {
         "q": song_name,
         "type": "track",
-        "limit": 10
+        "limit": 10,
+        "offset": offset
     }
 
     response = get(base_url, params=params, headers=headers)

@@ -20,7 +20,9 @@
 
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <ul class="list-group">
+            <!-- Search results container -->
+            <ul class="list-group" id="searchResultsContainer" data-playlist-id="{{playlist_id}}" data-song-name="{{ song_name }}">
+
                 {% set added_song_ids = [] %}
                 {% for song in songs %}
                 {% if song.id not in added_song_ids %}
@@ -32,7 +34,6 @@
                             <div class="col-md-8">
                                 <h5 class="text-light">{{ song.name }}</h5>
                                 <p class="mb-0">by {{ song.artists[0].name }}</p>
-                                
                             </div>
                             <div class="col-md-2">
                                 <form method="POST" action="{{ url_for('add_song_to_playlist', playlist_id=playlist.id) }}">

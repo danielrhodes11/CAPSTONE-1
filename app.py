@@ -1,6 +1,5 @@
 import os
-from flask import Flask, render_template, redirect, flash, session, g, request, url_for
-import requests
+from flask import Flask, render_template, redirect, flash, session, g, request, url_for, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Playlists, PlaylistTracks
 from forms import RegisterForm, LoginForm, EditUserForm, PlaylistForm, SongForm
@@ -351,9 +350,9 @@ def show_search_results(playlist_id):
 
     spotify_id = request.args.get("spotify_id")
 
-    response = search_for_song(get_token(), song_name)
+    response = search_for_song(get_token(), song_name, offset=10)
 
-    return render_template("search_results.html", playlist=playlist, songs=response, spotify_id=spotify_id)
+    return render_template("search_results.html", playlist=playlist, songs=response, spotify_id=spotify_id, song_name=song_name, playlist_id=playlist_id)
 
 
 @app.route("/playlists/<int:playlist_id>/add-song", methods=["POST"])

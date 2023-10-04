@@ -17,10 +17,12 @@
                     </p>
                     {% if song_info.preview %}
                         <div class="text-center">
-                            <audio controls>
-                                <source src="{{ song_info.preview }}" type="audio/mpeg">
-                                Your browser does not support the audio element.
-                            </audio>
+                            <div class="audio-container">
+                                <audio controls style="max-width: 100%;">
+                                    <source src="{{ song_info.preview }}" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </div>
                         </div>
                     {% else %}
                         <p class="text-center text-muted">No preview available for this song.</p>
