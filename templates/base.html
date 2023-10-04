@@ -23,9 +23,8 @@
 <body class="{% block body_class %}{% endblock %}">
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href=" {{ url_for('homepage') }} ">
-            <img src="/static/vinyl.png" width="30" height="30" class="d-inline-block align-top" alt=""
-                loading="lazy">
+        <a class="navbar-brand" href="{{ url_for('homepage') }}">
+            <img src="/static/vinyl.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
             <span>Playlistify</span>
         </a>
     
@@ -34,8 +33,23 @@
             <span class="navbar-toggler-icon"></span>
         </button>
     
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
+                {% if g.user %}
+                <li class="nav-item">
+                    <form class="form-inline" action="{{ url_for('show_search_results_globally')}}" method="GET">
+                        <input class="form-control mr-2" name="song_name" placeholder="Search Playlistify" id="search">
+                        <button class="btn btn-outline-light" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/genres">Explore Genres</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
                 {% if not g.user %}
                 <li class="nav-item">
                     <a class="nav-link" href="/signup">Sign up</a>
@@ -50,23 +64,16 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/logout">Log out</a>
+                    <a class="nav-link" href="/users/{{ g.user.id }}">My Playlists</a>
                 </li>
-                {% endif %}
-    
-                {% if g.user %}
                 <li class="nav-item">
-                    <form class="form-inline my-2 my-lg-0" action="{{ url_for('show_search_results_globally')}}" method="GET">
-                        <input class="form-control" name="song_name" placeholder="Search Playlistify" id="search">
-                        <button class="btn btn-outline-light" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
+                    <a class="nav-link" href="/logout">Log out</a>
                 </li>
                 {% endif %}
             </ul>
         </div>
     </nav>
+    
 
     
     <div class="container mt-5">
