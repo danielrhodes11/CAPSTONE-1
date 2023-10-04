@@ -232,22 +232,18 @@ def create_playlist(user_id):
     form = PlaylistForm()
 
     if form.validate_on_submit():
-        if form.image.data.includes("data:image"):
-            flash("Unable to process base64 image, please try another URL", "danger")
-            return redirect(f"/users/{user_id}/playlists/new")
-        else:
-            playlist = Playlists(
-                title=form.title.data,
-                description=form.description.data,
-                image=form.image.data,
-                user_id=user_id
-            )
+        playlist = Playlists(
+            title=form.title.data,
+            description=form.description.data,
+            image=form.image.data,
+            user_id=user_id
+        )
 
-            db.session.add(playlist)
-            db.session.commit()
+        db.session.add(playlist)
+        db.session.commit()
 
-            flash("Playlist created!", "success")
-            return redirect(f"/users/{user_id}")
+        flash("Playlist created!", "success")
+        return redirect(f"/users/{user_id}")
 
     return render_template("create_playlist.html", form=form, user=user)
 
