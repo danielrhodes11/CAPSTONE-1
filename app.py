@@ -565,11 +565,8 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 
-######## things to potentially add##########
-
-# block menu bar.
-# have login/signup be one link
-# use draw.io to make a diagram of the app
 
 
-# https://app.diagrams.net
+
+
+
